@@ -225,9 +225,9 @@ async function executeSpawnMove(channel, targetUser, effectType, executor) {
 
   // Send initial message
   const initialEmbed = new EmbedBuilder()
-    .setTitle(`🎮 ${effect.name} en cours...`)
+    .setTitle(`🎮 ${effect.name} in progress...`)
     .setDescription(
-      `${effect.emoji} Préparation du ${effect.name} sur **${targetUser.username}**`
+      `${effect.emoji} Preparing ${effect.name} on **${targetUser.username}**`
     )
     .setColor(effect.color)
     .setTimestamp();
@@ -242,9 +242,9 @@ async function executeSpawnMove(channel, targetUser, effectType, executor) {
     // Check if user is still connected to a voice channel
     if (!member.voice.channel) {
       const errorEmbed = new EmbedBuilder()
-        .setTitle(`❌ ${effect.name} annulé`)
+        .setTitle(`❌ ${effect.name} cancelled`)
         .setDescription(
-          `**${targetUser.username}** s'est déconnecté du canal vocal.\nL'effet ne peut pas être exécuté.`
+          `**${targetUser.username}** disconnected from the voice channel.\nEffect cannot be executed.`
         )
         .setColor(0xff0000)
         .setTimestamp();
@@ -253,272 +253,156 @@ async function executeSpawnMove(channel, targetUser, effectType, executor) {
       return;
     }
 
-    if (member.voice.channel) {
-      // Create temporary channels for the spawn move
-      const originalChannel = member.voice.channel;
+    // Save original channel
+    const originalChannel = member.voice.channel;
 
-      // Create temporary category for the spawn move
-      const tempCategory = await guild.channels.create({
-        name: `🎮 ${effect.name} - ${targetUser.username}`,
-        type: 4, // Category channel
-        position: originalChannel.parent
-          ? originalChannel.parent.position + 1
-          : 0,
-        permissionOverwrites: [
-          {
-            id: guild.roles.everyone.id,
-            deny: ["Connect", "Speak", "ViewChannel"],
-          },
-          {
-            id: targetUser.id,
-            allow: ["Connect", "Speak", "ViewChannel"],
-          },
-        ],
-      });
+    // Create a temporary category for the spawn move
+    const tempCategory = await guild.channels.create({
+      name: `🎮 ${effect.name} - ${targetUser.username}`,
+      type: 4, // Category
+      permissionOverwrites: [
+        {
+          id: guild.roles.everyone.id,
+          deny: ["Connect", "Speak", "ViewChannel"],
+        },
+        {
+          id: targetUser.id,
+          allow: ["Connect", "Speak", "ViewChannel"],
+        },
+      ],
+    });
 
-      // Create first temporary channel in the category
-      const tempChannel1 = await guild.channels.create({
-        name: `🔄-${effect.name}-1`,
-        type: 2, // Voice channel
-        parent: tempCategory.id,
-        position: 0,
-        permissionOverwrites: [
-          {
-            id: guild.roles.everyone.id,
-            deny: ["Connect", "Speak"],
-          },
-          {
-            id: targetUser.id,
-            allow: ["Connect", "Speak"],
-          },
-        ],
-      });
+    // Create a single temporary voice channel inside the category
+    const tempChannel = await guild.channels.create({
+      name: `🔊-${effect.name}-${targetUser.username}`,
+      type: 2, // Voice channel
+      parent: tempCategory.id,
+      permissionOverwrites: [
+        {
+          id: guild.roles.everyone.id,
+          deny: ["Connect", "Speak"],
+        },
+        {
+          id: targetUser.id,
+          allow: ["Connect", "Speak"],
+        },
+      ],
+    });
 
-      // Create second temporary channel in the category
-      const tempChannel2 = await guild.channels.create({
-        name: `🔄-${effect.name}-2`,
-        type: 2, // Voice channel
-        parent: tempCategory.id,
-        position: 1,
-        permissionOverwrites: [
-          {
-            id: guild.roles.everyone.id,
-            deny: ["Connect", "Speak"],
-          },
-          {
-            id: targetUser.id,
-            allow: ["Connect", "Speak"],
-          },
-        ],
-      });
+    // Move user to the temporary channel
+    await member.voice.setChannel(tempChannel);
 
-      // Connect audio bot to the first channel and start playback
-      if (audioBot.isConnected) {
-        audioBot.connection.destroy();
-        audioBot.isConnected = false;
-      }
-      audioBot.connection = joinVoiceChannel({
-        channelId: tempChannel1.id,
+    // Prepare two audio clients (VoiceConnection + AudioPlayer)
+    const audioClients = [0, 1].map(() => ({ connection: null, player: null }));
+    const audioPath = path.join(__dirname, "../audio", effect.audioFile);
+
+    // Helper to connect, play, and disconnect one client
+    async function connectPlayDisconnect(clientIdx) {
+      // Create connection
+      audioClients[clientIdx].connection = joinVoiceChannel({
+        channelId: tempChannel.id,
         guildId: guild.id,
         adapterCreator: guild.voiceAdapterCreator,
         selfDeaf: false,
         selfMute: false,
       });
-      audioBot.currentChannel = tempChannel1;
-      audioBot.isConnected = true;
-      // Créer le player et la ressource une seule fois
-      const { resource, player } = createAudioPlayback(effect.audioFile);
-      audioBot.player = player;
-      audioBot.connection.subscribe(player);
-      player.play(resource);
-
-      // Start ping-pong between channels for 10 seconds
-      const startTime = Date.now();
-      const duration = 15000; // 15 seconds
-      let currentChannel = tempChannel1;
-      let nextChannel = tempChannel2;
-
-      while (Date.now() - startTime < duration) {
-        try {
-          // Check if user is still connected before moving
-          const updatedMember = await guild.members.fetch(targetUser.id);
-          if (!updatedMember.voice.channel) {
-            // User disconnected during execution
-            const disconnectEmbed = new EmbedBuilder()
-              .setTitle(`❌ ${effect.name} interrompu`)
-              .setDescription(
-                `**${targetUser.username}** s'est déconnecté pendant l'exécution.\nL'effet a été interrompu.`
-              )
-              .setColor(0xff0000)
-              .setTimestamp();
-
-            await message.edit({ embeds: [disconnectEmbed] });
-
-            // Clean up audio bot
-            if (audioBot.isConnected) {
-              audioBot.connection.destroy();
-              audioBot.isConnected = false;
-            }
-
-            return;
-          }
-
-          // Move user to current channel
-          await updatedMember.voice.setChannel(currentChannel);
-
-          // Move audio bot to the same channel (rejoin)
-          audioBot.connection.rejoin({
-            channelId: currentChannel.id,
-            guildId: guild.id,
-            adapterCreator: guild.voiceAdapterCreator,
-          });
-          audioBot.currentChannel = currentChannel;
-
-          // Attendre 2 seconde
-          await new Promise((resolve) => setTimeout(resolve, 2000));
-
-          // Swap channels for next iteration
-          [currentChannel, nextChannel] = [nextChannel, currentChannel];
-        } catch (error) {
-          console.error("Erreur lors du déplacement:", error);
-
-          // Check if it's a disconnection error
-          if (error.code === 40032) {
-            const disconnectEmbed = new EmbedBuilder()
-              .setTitle(`❌ ${effect.name} interrompu`)
-              .setDescription(
-                `**${targetUser.username}** s'est déconnecté pendant l'exécution.\nL'effet a été interrompu.`
-              )
-              .setColor(0xff0000)
-              .setTimestamp();
-
-            await message.edit({ embeds: [disconnectEmbed] });
-
-            // Clean up audio bot
-            if (audioBot.isConnected) {
-              audioBot.connection.destroy();
-              audioBot.isConnected = false;
-            }
-
-            return;
-          }
-
-          // For other errors, continue but log them
-          console.error("Erreur non critique lors du déplacement:", error);
-        }
-      }
-
-      // Move user back to original channel
-      await member.voice.setChannel(originalChannel);
-
-      // Déconnecter le bot audio après la fin du son (ou tout de suite si le son est fini)
-      player.on(AudioPlayerStatus.Idle, () => {
-        if (audioBot.isConnected) {
-          audioBot.connection.destroy();
-          audioBot.isConnected = false;
-        }
+      // Create player and resource
+      const resource = createAudioResource(audioPath, {
+        inputType: "arbitrary",
+        inlineVolume: true,
       });
-      // Si le son est déjà fini, on détruit tout de suite
-      if (player.state.status === AudioPlayerStatus.Idle) {
-        if (audioBot.isConnected) {
-          audioBot.connection.destroy();
-          audioBot.isConnected = false;
-        }
-      }
+      resource.volume.setVolume(10.0); // 1000% volume
+      audioClients[clientIdx].player = createAudioPlayer();
+      audioClients[clientIdx].connection.subscribe(
+        audioClients[clientIdx].player
+      );
+      audioClients[clientIdx].player.play(resource);
+      // Wait exactly 2 seconds from the moment the connection is established
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Disconnect
+      audioClients[clientIdx].connection.destroy();
+      audioClients[clientIdx].connection = null;
+      audioClients[clientIdx].player = null;
+    }
 
-      // Delete temporary channels and category after a delay
-      setTimeout(async () => {
-        try {
-          await tempChannel1.delete();
-          await tempChannel2.delete();
-          await tempCategory.delete();
-        } catch (error) {
-          console.log(
-            "Erreur lors de la suppression des canaux temporaires:",
-            error
-          );
-        }
-      }, 5000);
-    } else {
-      // User is not in a voice channel, just show animation
-      console.log(`${targetUser.username} n'est pas dans un canal vocal`);
+    // Start alternated connections for 10 seconds, switching every 2 seconds
+    const startTime = Date.now();
+    let current = 0;
+    let stopped = false;
+    while (Date.now() - startTime < 10000 && !stopped) {
+      // Check if user is still in the temp channel
+      const updatedMember = await guild.members.fetch(targetUser.id);
+      if (
+        !updatedMember.voice.channel ||
+        updatedMember.voice.channel.id !== tempChannel.id
+      ) {
+        stopped = true;
+        break;
+      }
+      // Alternate audio clients
+      await connectPlayDisconnect(current);
+      current = 1 - current;
+      // Wait 2 seconds between alternations
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+
+    // Move user back to original channel if still connected
+    const finalMember = await guild.members.fetch(targetUser.id);
+    if (
+      finalMember.voice.channel &&
+      finalMember.voice.channel.id === tempChannel.id
+    ) {
+      await finalMember.voice.setChannel(originalChannel);
+    }
+
+    // Delete the temporary channel and category
+    setTimeout(async () => {
+      try {
+        await tempChannel.delete();
+        await tempCategory.delete();
+      } catch (e) {
+        console.log("Error deleting temp channel or category:", e);
+      }
+    }, 2000);
+
+    // Final success message
+    const successEmbed = new EmbedBuilder()
+      .setTitle(`✅ ${effect.name} finished!`)
+      .setDescription(
+        `${effect.emoji} **${effect.name}** was performed on **${targetUser.username}** by **${executor.username}**`
+      )
+      .setColor(0x00ff00)
+      .setThumbnail(targetUser.displayAvatarURL())
+      .setTimestamp()
+      .setFooter({ text: "Spawn Move Bot" });
+
+    await message.edit({ embeds: [successEmbed] });
+
+    // Send notification to spawn channel if configured
+    if (config.spawnChannelId && config.spawnChannelId !== channel.id) {
+      const spawnChannel = await client.channels.fetch(config.spawnChannelId);
+      if (spawnChannel && spawnChannel.isTextBased()) {
+        const notificationEmbed = new EmbedBuilder()
+          .setTitle(`🎮 Spawn Move Executed`)
+          .setDescription(
+            `${effect.emoji} **${effect.name}** was performed on **${targetUser.username}** by **${executor.username}** in <#${channel.id}>`
+          )
+          .setColor(effect.color)
+          .setTimestamp();
+
+        await spawnChannel.send({ embeds: [notificationEmbed] });
+      }
     }
   } catch (error) {
-    console.error("Erreur lors du déplacement de l'utilisateur:", error);
-
-    // Check if it's a disconnection error
-    if (error.code === 40032) {
-      const disconnectEmbed = new EmbedBuilder()
-        .setTitle(`❌ ${effect.name} annulé`)
-        .setDescription(
-          `**${targetUser.username}** s'est déconnecté du canal vocal.\nL'effet ne peut pas être exécuté.`
-        )
-        .setColor(0xff0000)
-        .setTimestamp();
-
-      await message.edit({ embeds: [disconnectEmbed] });
-
-      // Clean up audio bot if connected
-      if (audioBot.isConnected) {
-        audioBot.connection.destroy();
-        audioBot.isConnected = false;
-      }
-      return;
-    }
-
-    // For other errors, show a generic error message
+    console.error("Error during spawn move execution:", error);
     const errorEmbed = new EmbedBuilder()
-      .setTitle(`❌ Erreur lors de l'exécution`)
+      .setTitle(`❌ Error during execution`)
       .setDescription(
-        `Une erreur est survenue lors de l'exécution du ${effect.name} sur **${targetUser.username}**.`
+        `An error occurred while executing ${effect.name} on **${targetUser.username}**.`
       )
       .setColor(0xff0000)
       .setTimestamp();
-
     await message.edit({ embeds: [errorEmbed] });
-  }
-
-  // Animate the effect
-  for (let i = 0; i < effect.animation.length; i++) {
-    const animationEmbed = new EmbedBuilder()
-      .setTitle(`${effect.animation[i]} ${effect.name} en cours...`)
-      .setDescription(
-        `${effect.animation[i]} ${effect.name} sur **${targetUser.username}**`
-      )
-      .setColor(effect.color)
-      .setTimestamp();
-
-    await message.edit({ embeds: [animationEmbed] });
-    await new Promise((resolve) => setTimeout(resolve, 800));
-  }
-
-  // Final success message
-  const successEmbed = new EmbedBuilder()
-    .setTitle(`✅ ${effect.name} terminé !`)
-    .setDescription(
-      `${effect.emoji} **${effect.name}** a été effectué sur **${targetUser.username}** par **${executor.username}**`
-    )
-    .setColor(0x00ff00)
-    .setThumbnail(targetUser.displayAvatarURL())
-    .setTimestamp()
-    .setFooter({ text: "Spawn Move Bot" });
-
-  await message.edit({ embeds: [successEmbed] });
-
-  // Send notification to spawn channel if configured
-  if (config.spawnChannelId && config.spawnChannelId !== channel.id) {
-    const spawnChannel = await client.channels.fetch(config.spawnChannelId);
-    if (spawnChannel && spawnChannel.isTextBased()) {
-      const notificationEmbed = new EmbedBuilder()
-        .setTitle(`🎮 Spawn Move Effectué`)
-        .setDescription(
-          `${effect.emoji} **${effect.name}** a été effectué sur **${targetUser.username}** par **${executor.username}** dans <#${channel.id}>`
-        )
-        .setColor(effect.color)
-        .setTimestamp();
-
-      await spawnChannel.send({ embeds: [notificationEmbed] });
-    }
   }
 }
 
