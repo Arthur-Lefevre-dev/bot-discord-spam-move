@@ -1,32 +1,32 @@
-# 🤖 Bot Discord Spawn Move
+# 🤖 Discord Spawn Move Bot
 
-Un bot Discord simple et efficace pour effectuer des "spawn moves" sur les utilisateurs, inspiré des fonctionnalités de wiz sur MSN ou poke sur Teamspeak.
+A simple and efficient Discord bot to perform "spawn moves" on users, inspired by the classic MSN wiz or Teamspeak poke features.
 
-## ✨ Fonctionnalités
+## ✨ Features
 
-- **🎮 Effets de Spawn Move** : Wiz, Poke, Shake, Bounce
-- **⚡ Commandes Slash** : Intégration native Discord
-- **🔐 Système de permissions** : **Réservé aux administrateurs uniquement**
-- **🎨 Animations** : Effets visuels avec embeds Discord
-- **📱 Notifications** : Messages dans les canaux configurés
-- **🔒 Sécurité** : Contrôle d'accès strict pour les administrateurs
+- **🎮 Spawn Move Effects**: Wiz, Poke, Shake, Bounce
+- **⚡ Slash Commands**: Native Discord integration
+- **🔐 Permission System**: **Admins only**
+- **🎨 Animations**: Visual effects with Discord embeds
+- **📱 Notifications**: Messages in configured channels
+- **🔒 Security**: Strict admin access control
 
 ## 🚀 Installation
 
-### Prérequis
+### Prerequisites
 
-- Node.js 18 ou supérieur
-- npm ou yarn
-- Un bot Discord (voir [Création du bot Discord](#création-du-bot-discord))
+- Node.js 18 or higher
+- npm or yarn
+- A Discord bot (see [Creating the Discord Bot](#creating-the-discord-bot))
 
-### 1. Cloner le projet
+### 1. Clone the project
 
 ```bash
-git clone <votre-repo>
+git clone <your-repo>
 cd bot-discord-spam-move
 ```
 
-### 2. Installer les dépendances
+### 2. Install dependencies
 
 ```bash
 npm install
@@ -34,222 +34,222 @@ npm install
 
 ### 3. Configuration
 
-1. Copiez le fichier d'exemple :
+1. Copy the example file:
 
 ```bash
 cp env.example .env
 ```
 
-2. Modifiez le fichier `.env` avec vos informations :
+2. Edit the `.env` file with your information:
 
 ```env
-# Configuration du bot Discord
-DISCORD_TOKEN=le_token_de_votre_bot
-DISCORD_CLIENT_ID=l_id_client_de_votre_application
-DISCORD_GUILD_ID=l_id_de_votre_serveur
+# Discord Bot Configuration
+DISCORD_TOKEN=your_bot_token
+DISCORD_CLIENT_ID=your_application_client_id
+DISCORD_GUILD_ID=your_guild_id
 
-# Configuration du bot
-ADMIN_ROLE_ID=l_id_du_role_admin
-SPAWN_CHANNEL_ID=l_id_du_canal_de_spawn
+# Bot Configuration
+ADMIN_ROLE_ID=your_admin_role_id
+SPAWN_CHANNEL_ID=your_spawn_channel_id
 ```
 
-### 4. Déployer les commandes slash
+### 4. Deploy slash commands
 
 ```bash
 npm run deploy
 ```
 
-### 5. Démarrer le bot
+### 5. Start the bot
 
 ```bash
-# Démarrer le bot Discord
+# Start the Discord bot
 npm start
 
-# Ou en mode développement
+# Or in development mode
 npm run dev
 ```
 
-## 🤖 Création du Bot Discord
+## 🤖 Creating the Discord Bot
 
-### 1. Créer une application Discord
+### 1. Create a Discord application
 
-1. Rendez-vous sur le [Portail développeur Discord](https://discord.com/developers/applications)
-2. Cliquez sur "Nouvelle application"
-3. Donnez un nom à votre application
-4. Notez l'**ID de l'application** (Client ID)
+1. Go to the [Discord Developer Portal](https://discord.com/developers/applications)
+2. Click "New Application"
+3. Give your application a name
+4. Note the **Application ID** (Client ID)
 
-### 2. Créer le bot
+### 2. Create the bot
 
-1. Dans votre application, allez dans "Bot"
-2. Cliquez sur "Ajouter un bot"
-3. Copiez le **Token** du bot
-4. Activez les options suivantes :
+1. In your application, go to "Bot"
+2. Click "Add Bot"
+3. Copy the **Bot Token**
+4. Enable the following options:
    - **Message Content Intent**
    - **Server Members Intent**
 
-### 3. Inviter le bot sur votre serveur
+### 3. Invite the bot to your server
 
-1. Allez dans "OAuth2" > "Générateur d'URL"
-2. Sélectionnez les scopes :
+1. Go to "OAuth2" > "URL Generator"
+2. Select the scopes:
    - `bot`
    - `applications.commands`
-3. Sélectionnez les permissions :
-   - `Envoyer des messages`
-   - `Utiliser les commandes slash`
-   - `Envoyer des embeds`
-   - `Lire l'historique des messages`
-   - `Déplacer les membres` (pour déplacer les utilisateurs)
-   - `Gérer les salons` (pour créer les canaux temporaires)
-4. Utilisez l'URL générée pour inviter le bot
+3. Select the permissions:
+   - `Send Messages`
+   - `Use Slash Commands`
+   - `Embed Links`
+   - `Read Message History`
+   - `Move Members` (to move users)
+   - `Manage Channels` (to create temporary channels)
+4. Use the generated URL to invite the bot
 
-## 📋 Commandes Disponibles
+## 📋 Available Commands
 
-> ⚠️ **IMPORTANT** : Toutes les commandes sont réservées aux **administrateurs uniquement**.
+> ⚠️ **IMPORTANT**: All commands are **admin only**.
 
 ### `/poke`
 
-Déclenche un spawn move sur un utilisateur connecté.
+Triggers a spawn move on a connected user.
 
-**Permissions requises :**
+**Required permissions:**
 
-- Permission **Administrateur** sur le serveur
-- Ou rôle administrateur spécifique (si configuré)
-- Ou être propriétaire du serveur
+- **Administrator** permission on the server
+- Or a specific admin role (if configured)
+- Or be the server owner
 
-**Options :**
+**Options:**
 
-- `effet` : Type d'effet (obligatoire)
+- `effect`: Type of effect (required)
   - ✨ Wiz
   - 👆 Poke
   - 🌪️ Shake
   - 🏀 Bounce
-- `mode` : Mode de sélection (optionnel)
-  - 🎯 Sélection manuelle (par défaut)
-  - 🎲 Aléatoire
+- `mode`: Selection mode (optional)
+  - 🎯 Manual selection (default)
+  - 🎲 Random
 
-**Utilisation :**
+**Usage:**
 
-1. Tapez `/poke effet:wiz`
-2. Sélectionnez l'utilisateur connecté dans la liste proposée
-3. Cliquez sur "Exécuter"
+1. Type `/poke effect:wiz`
+2. Select the connected user from the list
+3. Click "Execute"
 
-**Exemples :**
+**Examples:**
 
 ```
-/poke effet:wiz                    # Mode manuel (par défaut)
-/poke effet:wiz mode:random        # Mode aléatoire
+/poke effect:wiz                    # Manual mode (default)
+/poke effect:wiz mode:random        # Random mode
 ```
 
 ### `/pokerandom`
 
-Déclenche un spawn move aléatoire sur un utilisateur connecté.
+Triggers a random spawn move on a connected user.
 
-**Options :**
+**Options:**
 
-- `effet` : Type d'effet (obligatoire)
+- `effect`: Type of effect (required)
   - ✨ Wiz
   - 👆 Poke
   - 🌪️ Shake
   - 🏀 Bounce
 
-**Utilisation :**
+**Usage:**
 
-1. Tapez `/pokerandom effet:wiz`
-2. L'utilisateur est sélectionné automatiquement
-3. Cliquez sur "Exécuter"
+1. Type `/pokerandom effect:wiz`
+2. The user is selected automatically
+3. Click "Execute"
 
-**Exemple :**
+**Example:**
 
 ```
-/pokerandom effet:wiz
+/pokerandom effect:wiz
 ```
 
-### Menu Clic Droit (Applications)
+### Right-Click Menu (Applications)
 
-Vous pouvez aussi utiliser le menu clic droit sur un utilisateur :
+You can also use the right-click menu on a user:
 
-- **Poke Wiz** - Effet Wiz direct
-- **Poke Shake** - Effet Shake direct
-- **Poke Bounce** - Effet Bounce direct
+- **Poke Wiz** – Direct Wiz effect
+- **Poke Shake** – Direct Shake effect
+- **Poke Bounce** – Direct Bounce effect
 
 ### `/spawnlist`
 
-Affiche la liste des effets disponibles.
+Shows the list of available effects.
 
 ### `/spawnhelp`
 
-Affiche l'aide et les instructions d'utilisation.
+Shows help and usage instructions.
 
-## 🎯 Utilisation
+## 🎯 Usage
 
-### Commande `/poke`
+### `/poke` command
 
-1. **Tapez `/poke effet:wiz`** dans un canal
-2. **Sélectionnez l'utilisateur** dans la liste proposée (seuls les utilisateurs connectés apparaissent)
-3. **Cliquez sur "Exécuter"**
+1. **Type `/poke effect:wiz`** in a channel
+2. **Select the user** from the list (only connected users appear)
+3. **Click "Execute"**
 
-### Commande `/pokerandom`
+### `/pokerandom` command
 
-1. **Tapez `/pokerandom effet:wiz`** dans un canal
-2. **L'utilisateur est sélectionné automatiquement** au hasard
-3. **Cliquez sur "Exécuter"**
+1. **Type `/pokerandom effect:wiz`** in a channel
+2. **The user is selected automatically** at random
+3. **Click "Execute"**
 
-### Menu Clic Droit
+### Right-Click Menu
 
-1. **Clic droit** sur un utilisateur
-2. **Applications** → Choisissez l'effet :
-   - **Poke Wiz** - Effet Wiz direct
-   - **Poke Shake** - Effet Shake direct
-   - **Poke Bounce** - Effet Bounce direct
+1. **Right-click** on a user
+2. **Applications** → Choose the effect:
+   - **Poke Wiz** – Direct Wiz effect
+   - **Poke Shake** – Direct Shake effect
+   - **Poke Bounce** – Direct Bounce effect
 
-> 💡 **Note** : L'utilisateur doit être connecté à un canal vocal pour que les effets fonctionnent.
+> 💡 **Note**: The user must be connected to a voice channel for the effects to work.
 
-## 🔧 Configuration Avancée
+## 🔧 Advanced Configuration
 
-### Variables d'Environnement
+### Environment Variables
 
-| Variable            | Description                                      | Obligatoire |
-| ------------------- | ------------------------------------------------ | ----------- |
-| `DISCORD_TOKEN`     | Token du bot Discord                             | ✅          |
-| `DISCORD_CLIENT_ID` | ID de l'application Discord                      | ✅          |
-| `DISCORD_GUILD_ID`  | ID du serveur (optionnel)                        | ❌          |
-| `ADMIN_ROLE_ID`     | ID du rôle administrateur spécifique (optionnel) | ❌          |
-| `SPAWN_CHANNEL_ID`  | ID du canal de spawn                             | ❌          |
+| Variable            | Description                       | Required |
+| ------------------- | --------------------------------- | -------- |
+| `DISCORD_TOKEN`     | Discord bot token                 | ✅       |
+| `DISCORD_CLIENT_ID` | Discord application ID            | ✅       |
+| `DISCORD_GUILD_ID`  | Server ID (optional)              | ❌       |
+| `ADMIN_ROLE_ID`     | Specific admin role ID (optional) | ❌       |
+| `SPAWN_CHANNEL_ID`  | Spawn channel ID                  | ❌       |
 
-### Configuration des Permissions Administrateur
+### Admin Permission Configuration
 
-Le bot vérifie les permissions dans cet ordre :
+The bot checks permissions in this order:
 
-1. **Permission Administrateur** sur le serveur
-2. **Rôle administrateur spécifique** (si `ADMIN_ROLE_ID` est configuré)
-3. **Propriétaire du serveur**
+1. **Administrator** permission on the server
+2. **Specific admin role** (if `ADMIN_ROLE_ID` is set)
+3. **Server owner**
 
-### Permissions du Bot
+### Bot Permissions
 
-Le bot nécessite les permissions suivantes sur Discord :
+The bot requires the following Discord permissions:
 
-- **Envoyer des messages**
-- **Utiliser les commandes slash**
-- **Envoyer des embeds**
-- **Lire l'historique des messages**
-- **Déplacer les membres** (pour déplacer les utilisateurs)
-- **Gérer les salons** (pour créer les canaux temporaires)
-- **Se connecter** aux canaux vocaux
-- **Parler** dans les canaux vocaux (pour l'audio)
+- **Send Messages**
+- **Use Slash Commands**
+- **Embed Links**
+- **Read Message History**
+- **Move Members** (to move users)
+- **Manage Channels** (to create temporary channels)
+- **Connect** to voice channels
+- **Speak** in voice channels (for audio)
 
-## 🎨 Personnalisation
+## 🎨 Customization
 
-### Ajouter de nouveaux effets
+### Add new effects
 
-1. Modifiez `src/bot.js`
-2. Ajoutez un nouvel effet dans `spawnEffects` :
+1. Edit `src/bot.js`
+2. Add a new effect in `spawnEffects`:
 
 ```javascript
 const spawnEffects = {
-  // ... effets existants
-  nouveau: {
-    name: "Nouveau",
-    description: "Description du nouvel effet",
+  // ... existing effects
+  newEffect: {
+    name: "New Effect",
+    description: "Description of the new effect",
     color: 0x00ff00,
     emoji: "🌟",
     animation: ["🌟", "⭐", "💫", "🌟"],
@@ -257,76 +257,76 @@ const spawnEffects = {
 };
 ```
 
-3. Mettez à jour les commandes dans `src/deploy-commands.js`
-4. Redéployez les commandes : `npm run deploy`
+3. Update the commands in `src/deploy-commands.js`
+4. Redeploy the commands: `npm run deploy`
 
-## 🐛 Dépannage
+## 🐛 Troubleshooting
 
-### Le bot ne répond pas
+### The bot does not respond
 
-1. Vérifiez que le token est correct
-2. Assurez-vous que les intents sont activés
-3. Vérifiez les permissions du bot
+1. Check that the token is correct
+2. Make sure the required intents are enabled
+3. Check the bot's permissions
 
-### Les commandes slash ne fonctionnent pas
+### Slash commands do not work
 
-1. Exécutez `npm run deploy`
-2. Attendez jusqu'à 1 heure pour les commandes globales
-3. Vérifiez que le bot a la permission "Utiliser les commandes slash"
+1. Run `npm run deploy`
+2. Wait up to 1 hour for global commands
+3. Check that the bot has the "Use Slash Commands" permission
 
-### L'ID utilisateur ne fonctionne pas
+### User ID does not work
 
-1. Vérifiez que l'ID est correct
-2. Assurez-vous que l'utilisateur existe
-3. Vérifiez que le bot peut voir l'utilisateur
+1. Check that the ID is correct
+2. Make sure the user exists
+3. Check that the bot can see the user
 
-### Erreur "Accès refusé" ou "Permissions insuffisantes"
+### "Access denied" or "Insufficient permissions" error
 
-1. **Vérifiez vos permissions** :
-   - Vous devez avoir la permission **Administrateur** sur le serveur
-   - Ou être propriétaire du serveur
-   - Ou avoir le rôle administrateur spécifique (si configuré)
-2. **Vérifiez la configuration** :
-   - Si vous utilisez `ADMIN_ROLE_ID`, vérifiez que l'ID du rôle est correct
-   - Assurez-vous que vous avez bien le rôle configuré
-3. **Vérifiez les permissions du bot** :
-   - Le bot doit avoir les permissions "Déplacer les membres" et "Gérer les salons"
-   - Vérifiez que le bot est bien dans le serveur avec les bonnes permissions
+1. **Check your permissions:**
+   - You must have the **Administrator** permission on the server
+   - Or be the server owner
+   - Or have the specific admin role (if set)
+2. **Check the configuration:**
+   - If you use `ADMIN_ROLE_ID`, make sure the role ID is correct
+   - Make sure you have the configured role
+3. **Check the bot's permissions:**
+   - The bot must have "Move Members" and "Manage Channels" permissions
+   - Make sure the bot is in the server with the correct permissions
 
-## 📝 Structure du Projet
+## 📝 Project Structure
 
 ```
 bot-discord-spam-move/
 ├── src/
-│   ├── bot.js              # Bot Discord principal
-│   └── deploy-commands.js  # Déploiement des commandes
-├── package.json            # Dépendances
-├── env.example             # Variables d'environnement
+│   ├── bot.js              # Main Discord bot
+│   └── deploy-commands.js  # Command deployment
+├── package.json            # Dependencies
+├── env.example             # Environment variables
 └── README.md               # Documentation
 ```
 
-## 🤝 Contribution
+## 🤝 Contributing
 
-Les contributions sont les bienvenues ! N'hésitez pas à :
+Contributions are welcome! Feel free to:
 
-1. Forker le projet
-2. Créer une branche pour votre fonctionnalité
-3. Commiter vos changements
-4. Pousser vers la branche
-5. Ouvrir une Pull Request
+1. Fork the project
+2. Create a branch for your feature
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
 
-## 📄 Licence
+## 📄 License
 
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 ## 🆘 Support
 
-Si vous rencontrez des problèmes :
+If you encounter issues:
 
-1. Vérifiez la section [Dépannage](#dépannage)
-2. Consultez les [Issues](https://github.com/votre-repo/issues)
-3. Créez une nouvelle issue avec les détails du problème
+1. Check the [Troubleshooting](#troubleshooting) section
+2. See the [Issues](https://github.com/your-repo/issues)
+3. Create a new issue with details about your problem
 
 ---
 
-**Développé avec ❤️ pour la communauté Discord**
+**Developed with ❤️ for the Discord community**

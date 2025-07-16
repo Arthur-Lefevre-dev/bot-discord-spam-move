@@ -1,74 +1,74 @@
-# 🎵 Fichiers audio pour le bot Spawn Move
+# 🎵 Audio Files for Spawn Move Bot
 
-Ce dossier contient les fichiers MP3 utilisés par le bot pour les effets de spawn move.
+This folder contains the MP3 files used by the bot for spawn move effects.
 
-## 📁 Structure des fichiers
+## 📁 File Structure
 
 ```
 audio/
-├── wiz.mp3      # Son pour l'effet Wiz (magique/étoiles)
-├── poke.mp3     # Son pour l'effet Poke (court/rapide)
-├── shake.mp3    # Son pour l'effet Shake (tremblement)
-├── bounce.mp3   # Son pour l'effet Bounce (rebond)
-└── README.md    # Ce fichier
+├── wiz.mp3      # Sound for the Wiz effect (magical/stars)
+├── poke.mp3     # Sound for the Poke effect (short/quick)
+├── shake.mp3    # Sound for the Shake effect (shaking)
+├── bounce.mp3   # Sound for the Bounce effect (bouncing)
+└── README.md    # This file
 ```
 
-## 🎯 Fichiers requis
+## 🎯 Required Files
 
-Placez les fichiers MP3 suivants dans ce dossier :
+Place the following MP3 files in this folder:
 
 ### **wiz.mp3**
 
-- **Durée recommandée** : 1 à 3 secondes
-- **Style** : Son magique, étoiles, scintillement
-- **Format** : MP3, 44.1kHz, 128-320kbps
+- **Recommended duration**: 1 to 3 seconds
+- **Style**: Magical sound, stars, sparkle
+- **Format**: MP3, 44.1kHz, 128-320kbps
 
 ### **poke.mp3**
 
-- **Durée recommandée** : 0,5 à 1 seconde
-- **Style** : Son court, rapide, "pop"
-- **Format** : MP3, 44.1kHz, 128-320kbps
+- **Recommended duration**: 0.5 to 1 second
+- **Style**: Short, quick, "pop" sound
+- **Format**: MP3, 44.1kHz, 128-320kbps
 
 ### **shake.mp3**
 
-- **Durée recommandée** : 2 à 4 secondes
-- **Style** : Tremblement, vibration, secousse
-- **Format** : MP3, 44.1kHz, 128-320kbps
+- **Recommended duration**: 2 to 4 seconds
+- **Style**: Shaking, vibration, tremor
+- **Format**: MP3, 44.1kHz, 128-320kbps
 
 ### **bounce.mp3**
 
-- **Durée recommandée** : 1 à 2 secondes
-- **Style** : Rebond, ballon, bounce
-- **Format** : MP3, 44.1kHz, 128-320kbps
+- **Recommended duration**: 1 to 2 seconds
+- **Style**: Bouncing, ball, bounce
+- **Format**: MP3, 44.1kHz, 128-320kbps
 
-## 🎵 Sources recommandées
+## 🎵 Recommended Sources
 
-Vous pouvez trouver des sons gratuits sur :
+You can find free sounds at:
 
-- **Freesound.org** – Sons libres de droits
-- **Zapsplat.com** – Effets sonores gratuits
-- **Soundbible.com** – Sons courts et effets
-- **YouTube Audio Library** – Musique et effets gratuits
+- **Freesound.org** – Royalty-free sounds
+- **Zapsplat.com** – Free sound effects
+- **Soundbible.com** – Short sounds and effects
+- **YouTube Audio Library** – Free music and effects
 
 ## ⚠️ Important
 
-- Les fichiers doivent être au format **MP3**
-- Les noms de fichiers doivent être **exactement** ceux indiqués
-- Taille recommandée : moins de 1 Mo par fichier
-- Qualité : 128-320kbps pour un bon équilibre qualité/taille
+- Files must be in **MP3** format
+- File names must be **exactly** as indicated
+- Recommended size: less than 1 MB per file
+- Quality: 128-320kbps for a good quality/size balance
 
 ## 🔧 Test
 
-Une fois les fichiers placés, redémarrez le bot et testez :
+Once the files are in place, restart the bot and test:
 
 ```bash
 npm run dev
 ```
 
-Puis dans Discord :
+Then in Discord:
 
 ```
-/poke effet:wiz
+/poke effect:wiz
 ```
 
-Le bot doit alors jouer le son correspondant lors du ping-pong vocal !
+The bot should then play the corresponding sound during the voice ping-pong!
