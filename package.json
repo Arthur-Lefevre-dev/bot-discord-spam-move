@@ -1,0 +1,30 @@
+{
+  "name": "discord-spawn-move-bot",
+  "version": "1.0.0",
+  "description": "Bot Discord pour spawn move les utilisateurs",
+  "main": "src/bot.js",
+  "scripts": {
+    "start": "node src/bot.js",
+    "dev": "nodemon src/bot.js",
+    "deploy": "node src/deploy-commands.js"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "spawn",
+    "move"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/opus": "^0.10.0",
+    "@discordjs/voice": "^0.18.0",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "ffmpeg-static": "^5.2.0",
+    "libsodium-wrappers": "^0.7.13"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
